@@ -1,0 +1,40 @@
+version: "3.3"
+
+networks:
+  default:
+    name: traefik
+
+services: 
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    restart: unless-stopped
+    ports:
+      # GUI
+      - 8096:8096
+      # Auto Discovery
+      - 7359:7359
+      - 1900:1900
+    environment:
+      - TZ=America/Monterrey
+      - JELLYFIN_PublishedServerUrl=http://chad.tv
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik"
+      - "traefik.http.routers.jellyfin.rule=Host(`chad.tv`,`cheems.tv`)"
+      - "traefik.http.routers.jellyfin.entrypoints=web"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - D:/movies/documentales:/data/movies_documentales
+      - D:/movies/cartoons:/data/movies_cartoons
+      - D:/movies/español:/data/movies_español
+      - D:/movies/ingles:/data/movies_ingles
+      - D:/movies/anime:/data/movies_anime
+      - D:/series/cartoons:/data/series_cartoons
+      - D:/series/español:/data/series_español
+      - D:/series/ingles:/data/series_ingles
+      - D:/series/anime:/data/series_anime
+      - D:/videos/musicales:/data/videos/musicales
+      - D:/videos/comerciales:/data/videos/comerciales
+      - D:/videos/box:/data/videos/box
